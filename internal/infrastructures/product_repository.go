@@ -1,10 +1,10 @@
 package infrastructures
 
 import (
-	"crud-cleancode/internal/domain"
 	"fmt"
 	"log"
 
+	"github.com/noffrihendri/golang-crud-gin.git/internal/domain"
 	"gorm.io/gorm"
 )
 
@@ -14,19 +14,13 @@ type ProductRepo struct {
 }
 
 type ProductRepoContract interface {
-	// Create a new Product
 	CreateProduct(product *domain.Product) (*domain.Product, error)
-	// Update Product
 	UpdateProduct(product *domain.Product) error
-	// List Product
 	ListProduct() ([]*domain.Product, int, error)
-	// Get Product
 	GetProduct(ID string) (*domain.Product, error)
-	// Delete Product
 	DeleteProduct(ID string) error
 }
 
-// Create new role product instance
 func NewProductRepository(db *gorm.DB) ProductRepoContract {
 	return &ProductRepo{
 		db:   db,

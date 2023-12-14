@@ -1,13 +1,12 @@
 package handler
 
 import (
-	"crud-cleancode/internal/domain"
-	"crud-cleancode/internal/usecases"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/noffrihendri/golang-crud-gin.git/internal/usecases"
 	"gorm.io/gorm"
 )
 
@@ -17,18 +16,8 @@ type ProductHandler struct {
 	handler        Handler
 }
 type ProductHandlerContract interface {
-	// Create new product
-	// Create(w http.ResponseWriter, r *http.Request)
-	// // Update product
-	// Update(w http.ResponseWriter, r *http.Request)
-	// List of product
 	GetProduct(w *gin.Context)
 	GetProductByID(w *gin.Context)
-	CreateProduct(w *gin.Context)
-	// Detail of product
-	// Detail(w http.ResponseWriter, r *http.Request)
-	// // Delete product
-	// Delete(w http.ResponseWriter, r *http.Request)
 }
 
 func NewProductHandler(db *gorm.DB) ProductHandlerContract {
@@ -63,22 +52,3 @@ func (h *ProductHandler) GetProductByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, product)
 }
-func (h *ProductHandler) CreateProduct(c *gin.Context) {
-	var product domain.Product
-	if err := c.ShouldBindJSON(&product); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	createdProduct, err := h.productUsecase.CreateProduct(&product)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusCreated, createdProduct)
-}
-
-// func (controller *ProductHandler) DeleteProduct(id string) {
-// 	controller.Interactor.Delete(id)
-// }

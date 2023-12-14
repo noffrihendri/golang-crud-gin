@@ -1,12 +1,13 @@
 package usecases
 
 import (
-	"crud-cleancode/internal/domain"
-	infrastructure "crud-cleancode/internal/infrastructures"
 	"fmt"
 	"log"
 
+	"github.com/noffrihendri/golang-crud-gin.git/internal/domain"
 	"gorm.io/gorm"
+
+	infrastructure "github.com/noffrihendri/golang-crud-gin.git/internal/infrastructures"
 )
 
 type ProductUsecase struct {
@@ -15,17 +16,9 @@ type ProductUsecase struct {
 }
 
 type ProductUsecaseContract interface {
-	// Create new product
-	//Create(name, description string, stock int) (domain.Product, error)
-	// List of product
 	Read() ([]*domain.Product, error)
-	// Detail of product
 	GetProductById(ID string) (*domain.Product, error)
 	CreateProduct(product *domain.Product) (*domain.Product, error)
-	// // Update existing product
-	// Update(ID int, name, description string, stock int) (domain.Product, error)
-	// // Delete product
-	// Delete(ID int) error
 }
 
 func NewProductUsecase(db *gorm.DB) ProductUsecaseContract {
@@ -72,32 +65,3 @@ func (p *ProductUsecase) GetProductById(ID string) (*domain.Product, error) {
 
 	return product, nil
 }
-
-// func (p *ProductUsecase) Update(ID int, name, description string, stock int) (domain.Product, error) {
-// 	log.Printf("[%s][Update] is executed\n", p.name)
-// 	product := domain.Product{
-// 		ID:          ID,
-// 		Name:        name,
-// 		Description: description,
-// 		Stock:       stock,
-// 	}
-
-// 	if err := p.productRepo.Update(&product); err != nil {
-// 		log.Printf("Error : [%s][Update] %s \n", p.name, err.Error())
-// 		return product, err
-// 	}
-
-// 	return product, nil
-// }
-
-// func (p *ProductUsecase) Delete(ID int) error {
-// 	log.Printf("[%s][Delete] is executed\n", p.name)
-
-// 	err := p.productRepo.Delete(ID)
-// 	if err != nil {
-// 		log.Printf("Error : [%s][Delete] %s \n", p.name, err.Error())
-// 		return err
-// 	}
-
-// 	return nil
-// }
