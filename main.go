@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-	"crud-cleancode/databases"
-	"crud-cleancode/internal/handler"
+	"crud-cleancode/internal/router"
 	"fmt"
 	"net/http"
 	"os"
@@ -16,43 +15,7 @@ import (
 
 func main() {
 
-	router := gin.Default()
-	db := databases.NewDBPostgres()
-
-	productHandler := handler.NewProductHandler(db)
-
-	//userHandler := handler.NewUserHandler(db)
-
-	// router.GET("/users", func(c *gin.Context) {
-	// 	userHandler.GetUser(c)
-	// })
-	router.GET("/products", func(c *gin.Context) {
-		productHandler.GetProduct(c)
-	})
-
-	router.GET("/products/:id", func(c *gin.Context) {
-		productHandler.GetProductByID(c)
-	})
-
-	router.POST("/products", func(c *gin.Context) {
-		productHandler.CreateProduct(c)
-	})
-
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "already running",
-		})
-	})
-
-	// api := router.Group("/api")
-	// {
-	// 	api.GET("/ping", func(c *gin.Context) {
-	// 		c.JSON(200, gin.H{
-	// 			"message": "pong",
-	// 		})
-	// 	})
-
-	// }
+	router := router.Router()
 
 	server := &http.Server{
 		Addr:    ":8083", // Change this to your desired port
