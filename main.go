@@ -29,6 +29,15 @@ func main() {
 	router.GET("/products", func(c *gin.Context) {
 		productHandler.GetProduct(c)
 	})
+
+	router.GET("/products/:id", func(c *gin.Context) {
+		productHandler.GetProductByID(c)
+	})
+
+	router.POST("/products", func(c *gin.Context) {
+		productHandler.CreateProduct(c)
+	})
+
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "already running",

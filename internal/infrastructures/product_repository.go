@@ -2,6 +2,7 @@ package infrastructures
 
 import (
 	"crud-cleancode/internal/domain"
+	"fmt"
 	"log"
 
 	"gorm.io/gorm"
@@ -14,15 +15,15 @@ type ProductRepo struct {
 
 type ProductRepoContract interface {
 	// Create a new Product
-	CreateProduct(product *domain.Product) error
+	CreateProduct(product *domain.Product) (*domain.Product, error)
 	// Update Product
 	UpdateProduct(product *domain.Product) error
 	// List Product
-	ListProduct() ([]domain.Product, int, error)
+	ListProduct() ([]*domain.Product, int, error)
 	// Get Product
-	GetProduct(ID int) (domain.Product, error)
+	GetProduct(ID string) (*domain.Product, error)
 	// Delete Product
-	DeleteProduct(ID int) error
+	DeleteProduct(ID string) error
 }
 
 // Create new role product instance
@@ -33,36 +34,38 @@ func NewProductRepository(db *gorm.DB) ProductRepoContract {
 	}
 }
 
-func (r *ProductRepo) CreateProduct(product *domain.Product) error {
+func (r *ProductRepo) CreateProduct(product *domain.Product) (*domain.Product, error) {
 	log.Printf("[%s][Create] is executed\n", r.name)
 
-	if err := r.db.Create(&product).Error; err != nil {
-		log.Printf("Error : [%s][Create] %s\n", r.name, err.Error())
-		return err
-	}
+	sql := fmt.Sprintf("insert into product(name,price,quantity) values('%s',%f,%d) RETURNING id,name,price,quantity", product.Name, product.Price, product.Quantity)
 
-	return nil
+	if err := r.db.Raw(sql).Scan(&product).Error; err != nil {
+		log.Printf("Error : [%s][Create] %s\n", r.name, err.Error())
+		return product, nil
+	}
+	fmt.Println("model created", product)
+	return product, nil
 }
 
-func (r *ProductRepo) GetProduct(ID int) (domain.Product, error) {
+func (r *ProductRepo) GetProduct(ID string) (*domain.Product, error) {
 	log.Printf("[%s][Get] is executed\n", r.name)
 
 	db := r.db
 	var product domain.Product
 
-	if err := db.Debug().First(&product, ID).Error; err != nil {
+	if err := db.Debug().Table("product").Where("id = ?", ID).First(&product).Error; err != nil {
 		log.Printf("Error : [%s][GET] %s", r.name, err.Error())
-		return product, err
+		return &product, err
 	}
 
-	return product, nil
+	return &product, nil
 }
 
-func (r *ProductRepo) ListProduct() ([]domain.Product, int, error) {
+func (r *ProductRepo) ListProduct() ([]*domain.Product, int, error) {
 	log.Printf("[%s][List] is executed\n", r.name)
 
 	var count int64
-	var products []domain.Product
+	var products []*domain.Product
 
 	db := r.db
 
@@ -82,7 +85,7 @@ func (r *ProductRepo) UpdateProduct(product *domain.Product) error {
 	return nil
 }
 
-func (r *ProductRepo) DeleteProduct(ID int) error {
+func (r *ProductRepo) DeleteProduct(ID string) error {
 	log.Printf("[%s][Delete] is executed\n", r.name)
 
 	var product domain.Product

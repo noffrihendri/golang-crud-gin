@@ -3,6 +3,7 @@ package usecases
 import (
 	"crud-cleancode/internal/domain"
 	infrastructure "crud-cleancode/internal/infrastructures"
+	"fmt"
 	"log"
 
 	"gorm.io/gorm"
@@ -17,9 +18,10 @@ type ProductUsecaseContract interface {
 	// Create new product
 	//Create(name, description string, stock int) (domain.Product, error)
 	// List of product
-	Read() ([]domain.Product, error)
+	Read() ([]*domain.Product, error)
 	// Detail of product
-	// Detail(ID int) (domain.Product, error)
+	GetProductById(ID string) (*domain.Product, error)
+	CreateProduct(product *domain.Product) (*domain.Product, error)
 	// // Update existing product
 	// Update(ID int, name, description string, stock int) (domain.Product, error)
 	// // Delete product
@@ -33,23 +35,21 @@ func NewProductUsecase(db *gorm.DB) ProductUsecaseContract {
 	}
 }
 
-// func (p *ProductUsecase) Create(name, description string, stock int) (domain.Product, error) {
-// 	log.Printf("[%s][Create] is executed\n", p.name)
-// 	// product := domain.Product{
-// 	// 	Name:        name,
-// 	// 	Description: description,
-// 	// 	Stock:       stock,
-// 	// }
+func (p *ProductUsecase) CreateProduct(product *domain.Product) (*domain.Product, error) {
+	log.Printf("[%s][Create] is executed\n", p.name)
+	if product.Price > 10000 {
+		return product, fmt.Errorf("Nilai price kemahalan")
+	}
 
-// 	if err := p.productRepo.Create(&product); err != nil {
-// 		log.Printf("Error : [%s][Create] %s \n", p.name, err.Error())
-// 		return product, err
-// 	}
+	if product1, err := p.productRepo.CreateProduct(product); err != nil {
+		log.Printf("Error : [%s][Create] %s \n", p.name, err.Error())
+		return product1, err
+	}
 
-// 	return product, nil
-// }
+	return product, nil
+}
 
-func (p *ProductUsecase) Read() ([]domain.Product, error) {
+func (p *ProductUsecase) Read() ([]*domain.Product, error) {
 	log.Printf("[%s][Read] is executed\n", p.name)
 
 	products, _, err := p.productRepo.ListProduct()
@@ -61,7 +61,7 @@ func (p *ProductUsecase) Read() ([]domain.Product, error) {
 	return products, nil
 }
 
-func (p *ProductUsecase) Detail(ID int) (domain.Product, error) {
+func (p *ProductUsecase) GetProductById(ID string) (*domain.Product, error) {
 	log.Printf("[%s][Detail] is executed\n", p.name)
 
 	product, err := p.productRepo.GetProduct(ID)
