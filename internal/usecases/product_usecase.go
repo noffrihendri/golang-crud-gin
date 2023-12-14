@@ -1,8 +1,8 @@
-package usecase
+package usecases
 
 import (
-	"crud-cleancode/domain"
-	"crud-cleancode/infrastructure"
+	"crud-cleancode/internal/domain"
+	infrastructure "crud-cleancode/internal/infrastructures"
 	"log"
 
 	"gorm.io/gorm"

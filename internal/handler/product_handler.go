@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"crud-cleancode/usecase"
+	"crud-cleancode/internal/usecases"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 )
 
 type ProductHandler struct {
-	productUsecase usecase.ProductUsecaseContract
+	productUsecase usecases.ProductUsecaseContract
 	name           string
 	handler        Handler
 }
@@ -30,7 +30,7 @@ type ProductHandlerContract interface {
 
 func NewProductHandler(db *gorm.DB) ProductHandlerContract {
 	return &ProductHandler{
-		productUsecase: usecase.NewProductUsecase(db),
+		productUsecase: usecases.NewProductUsecase(db),
 		name:           "Product Handler",
 	}
 }

@@ -1,7 +1,7 @@
-package infrastructure
+package infrastructures
 
 import (
-	"crud-cleancode/domain"
+	"crud-cleancode/internal/domain"
 	"log"
 
 	"gorm.io/gorm"

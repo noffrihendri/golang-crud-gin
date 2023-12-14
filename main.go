@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"crud-cleancode/databases"
-	"crud-cleancode/handler"
+	"crud-cleancode/internal/handler"
 	"fmt"
 	"net/http"
 	"os"
